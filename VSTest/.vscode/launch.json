@@ -5,7 +5,7 @@
       "name": "localhost (Edge)",
       "type": "edge",
       "request": "launch",
-      "url": "http://localhost:3000",
+      "url": "http://localhost:80",
       "webRoot": "${workspaceFolder}\\public"
     },
     {

@@ -5,6 +5,10 @@
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove=".vscode\**" />
+    <TypeScriptConfiguration Remove=".vscode\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="public\test\" />
   </ItemGroup>
 </Project>
