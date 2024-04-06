@@ -1,0 +1,128 @@
+extends layout
+
+block content
+  h1= "Weather App"
+  table.table
+   tbody
+     tr 
+       td.table-cell
+              a#b1.btn(onclick='address(1)') +
+              div#w1.weather-widget(style="display:none;")
+                 img(src='http://openweathermap.org/img/w/04d.png' class='icon' alt="Weather Icon")
+                 div.weather-container
+                   div.temperature 21 C
+                   div.city Dorking
+                   div.weather-condition Mostly cloudy
+       td.table-cell
+              a#b2.btn(onclick='address(2)') +
+              div#w2.weather-widget(style="display:none;")
+                 img(src='http://openweathermap.org/img/w/04d.png' class ='icon' alt="Weather Icon")
+                 div.weather-container
+                   div.temperature 21 C
+                   div.city Dorking
+                   div.weather-condition Mostly cloudy
+           
+  p Send me the Weather!
+  div.email
+    input(type='textbox')
+    button(type="button") Get Notified!
+  div.modal-overlay
+     div.modal
+       h2(style="color:black") Enter your postcode
+       input(type='text', placeholder='Enter postcode' id='postcodeInput')
+       button#submitPostcode(onclick='getcity()') Submit
+  script.
+    var button = '';
+    function address(widget){
+      var modal = document.getElementsByClassName("modal-overlay")[0];
+      modal.style.display= "block";
+      button = widget;
+      console.log(button);
+    }
+    function getcity(){
+    var modal = document.getElementsByClassName("modal-overlay")[0];
+    var input = document.getElementById("postcodeInput").value;
+    console.log(input);
+
+    modal.style.display= "none";
+    console.log("/city:"+input);
+    town();
+    //winfo();
+    function town() {fetch("/city:"+input)
+    .then(response =>{
+     if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+    })
+    .then(data => {
+            // Handle the JSON response data
+           winfo(data.name);
+           console.log(data.name);
+          
+
+    })
+     .catch(error => {
+      // Handle errors
+      console.error('There was a problem with the fetch operation:', error);
+      });
+    }
+
+    function winfo(city){
+    fetch("/location"+city)
+    .then(response =>{
+     if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+    })
+    .then(data => {
+            // Handle the JSON response data
+           toggleElement("w"+button);
+           toggleElement("b"+button);
+
+           console.log(data);
+           console.log(data.main.temp);
+           console.log(data.name);
+           console.log(data.weather[0].description);
+
+           var temp = document.getElementsByClassName("temperature");
+           var city = document.getElementsByClassName("city");
+           var wcondition = document.getElementsByClassName("weather-condition");
+           var icon = document.getElementsByClassName("icon");
+           if(button ==1){
+            temp[0].innerHTML = (data.main.temp-273.15).toFixed(2) + " C";
+            city[0].innerHTML = data.name;
+            wcondition[0].innerHTML = data.weather[0].description;
+            icon[0].src = 'http://openweathermap.org/img/w/'+ data.weather[0].icon+'.png'
+           
+           console.log(icon[0].src)}
+           else{
+            temp[1].innerHTML = (data.main.temp-273.15).toFixed(2) + " C";
+            city[1].innerHTML = data.name;
+            wcondition[1].innerHTML = data.weather[0].description;
+           icon[1].src = 'http://openweathermap.org/img/w/'+ data.weather[0].icon+'.png'
+           }
+           
+
+           console.log(data);
+           console.log(data.main.temp);
+           console.log(data.name);
+           console.log(data.weather[0].description);
+
+    })
+     .catch(error => {
+      // Handle errors
+      console.error('There was a problem with the fetch operation:', error);
+      });
+      }
+
+      function toggleElement(Element){
+      var modal = document.getElementById(Element);
+      if (modal.style.display === "none"){
+      modal.style.display = "flex";
+      } else {
+      modal.style.display = "none";
+      }
+    }
+    }
